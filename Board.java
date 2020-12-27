@@ -16,13 +16,15 @@ public class Board extends JPanel {
     protected final int WIDTH = 8;
     protected int[] kingW, kingB;
     protected Team turn;
+    protected boolean successfulMove;
 
     public Board(){
         turn = Team.WHITE;
         pieces = new Piece[LENGTH][WIDTH];
-        kingW = new int[]{7, 3};
+        kingW = new int[]{7, 4};
         kingB = new int[]{0, 4};
         threats = new ArrayList<>();
+        successfulMove = true;
         initPieces();
     }
 
@@ -36,11 +38,14 @@ public class Board extends JPanel {
         Team b = Team.BLACK;
         Piece[] blackOrder = {new Rook(b), new Knight(b), new Bishop(b), new Queen(b), new King(b), new Bishop(b),
                                 new Knight(b), new Rook(b)};
-        Piece[] whiteOrder = {new Rook(w), new Knight(w), new Bishop(w), new King(w), new Queen(w), new Bishop(w),
+        Piece[] whiteOrder = {new Rook(w), new Knight(w), new Bishop(w), new Queen(w), new King(w), new Bishop(w),
                                 new Knight(w), new Rook(w)};
         pieces[0] = blackOrder;
-        Arrays.fill(pieces[1], new Pawn(b));
-        Arrays.fill(pieces[6], new Pawn(w));
+        int j;
+        for(j = 0; j < LENGTH; j++){
+            pieces[1][j] = new Pawn(b);
+            pieces[6][j] = new Pawn(w);
+        }
         pieces[7] = whiteOrder;
         int i;
         for(i = 2; i < 6; i++){
@@ -59,7 +64,7 @@ public class Board extends JPanel {
         }
         Move m = typeOfMove(currentCors, newCors);
         Piece p = pieces[currentCors[0]][currentCors[1]];
-        if(p == null || !p.isMyTurn(this.turn)){
+        if(p == null){
             return false;
         }
         Piece p2 = pieces[newCors[0]][newCors[1]];
@@ -71,25 +76,55 @@ public class Board extends JPanel {
     }
 
     /*
+     * purpose: determine if it is current pieces turn
+     * input: cors
+     * result: boolean whether is piece's turn
+     */
+    public boolean isPieceTurn(int[] cors){
+        return pieces[cors[0]][cors[1]].isMyTurn(turn);
+    }
+
+   /*
+    * purpose: determine of cor is a king
+    * input: int[] cors
+    * result: returns boolean true or false
+    */
+   public boolean isKing(int[] cors){
+       return (Arrays.equals(cors, kingW) || Arrays.equals(cors, kingB));
+   }
+
+    /*
      * purpose: if a piece can move, move it
      * input: currentCors, newCors
      * result: Piece is moved to a new Square
      */
     public boolean move(int[] currentCors, int[] newCors){
-        if(canMove(currentCors, newCors, true)){
+        if(canMove(currentCors, newCors, true) && !isKing(newCors) && isPieceTurn(currentCors)){
+            if(isKing(currentCors)){
+                kingW = turn.equals(Team.WHITE) ? newCors : kingW;
+                kingB = turn.equals(Team.WHITE) ? kingB : newCors;
+            }
+            Piece temp = pieces[newCors[0]][newCors[1]];
             pieces[newCors[0]][newCors[1]] = pieces[currentCors[0]][currentCors[1]];
             pieces[currentCors[0]][currentCors[1]] = null;
-            int[] king = turn.equals(Team.WHITE) ? kingW : kingB;
-            if(currentCors == king){
-                king = newCors;
-                kingW = turn.equals(Team.WHITE) ? king : kingW;
-                kingB = turn.equals(Team.WHITE) ? kingB : king;
+            if(isInCheck(turn)){
+                System.out.println("invalid move");
+                if(isKing(newCors)){
+                    kingW = turn.equals(Team.WHITE) ? currentCors : kingW;
+                    kingB = turn.equals(Team.WHITE) ? kingB : currentCors;
+                }
+                pieces[currentCors[0]][currentCors[1]] = pieces[newCors[0]][newCors[1]];
+                pieces[newCors[0]][newCors[1]] = temp;
+                this.successfulMove = false;
+                return false;
             }
             turn = turn.equals(Team.WHITE) ? Team.BLACK : Team.WHITE;
             System.out.println("valid move");
+            this.successfulMove = true;
             return true;
         }
         System.out.println("invalid move");
+        this.successfulMove = false;
         return false;
     }
 
@@ -163,9 +198,11 @@ public class Board extends JPanel {
         threats.clear();
         int[] king = t.equals(Team.WHITE) ? kingW : kingB;
         int i, j;
+        boolean canMove;
         for(i = 0; i < LENGTH; i++){
             for(j = 0; j < WIDTH; j++){
-                if(pieces[i][j] != null && canMove(new int[]{i, j}, king, false)){
+                canMove = canMove(new int[]{i, j}, king, false);
+                if(pieces[i][j] != null && canMove && pieces[i][j].canCapture(new Pawn(turn))){
                     addThreat(new int[]{i, j}, king);
                 }
             }
@@ -282,32 +319,45 @@ public class Board extends JPanel {
         if(!isInCheck(turn)){
             return false;
         }
-        int i, j, k, l;
+        int i;
         for(i = 0; i < escapes.size(); i++){
-            for(j = 0; j < threats.size(); j++){
-                if(canMove(threats.get(j)[0], escapes.get(i), false)){
-                    break;
-                }
-                else if(i == escapes.size() - 1){
-                    return false;
-                }
+            if(!wouldBeCheck(escapes.get(i))){
+                return false;
             }
         }
         if(threats.size() > 1){
             return true;
         }
+        int j, k;
+        boolean canMove;
         for(i = 0; i < threats.get(0).length; i++){
-            for(j = 0; j < LENGTH; j++){
-                for(k = 0; k < WIDTH; k++){
-                    for(l = 0; l < threats.get(i).length; l++){
-                        if(canMove(new int[]{j, k}, threats.get(i)[l], false)){
-                            return false;
-                        }
+            for(j = 0; j < WIDTH; j++){
+                for(k = 0; k < LENGTH; k++){
+                    canMove = canMove(new int[]{j, k}, threats.get(0)[i], false);
+                    if(pieces[j][k] != null && canMove && !pieces[j][k].canCapture(new Pawn(turn))){
+                        return false;
                     }
                 }
             }
         }
         return true;
+    }
+
+    /*
+     * purpose: determine if it would be check if king occupied given cors
+     * input: int[] cors
+     * result: boolean true/false
+     */
+    public boolean wouldBeCheck(int[] cors){
+        int i, j;
+        for(i = 0; i < LENGTH; i++){
+            for(j = 0; j < WIDTH; j++){
+                if(canMove(new int[]{i, j}, cors, false) && pieces[i][j].canCapture(new Pawn(turn))){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /*
@@ -318,9 +368,11 @@ public class Board extends JPanel {
     public List<int[]> kingEscapes(int[] king){
         List<int[]> escapes = new ArrayList<>();
         int i, j;
+        boolean canMove;
         for(i = 0; i < LENGTH; i++){
             for(j = 0; j < WIDTH; j++){
-                if(Math.abs(i - king[0]) <= 1 && Math.abs(j - king[1]) <= 1 && canMove(king, new int[]{i, j}, false)){
+                canMove = canMove(king, new int[]{i, j}, false);
+                if(Math.abs(i - king[0]) <= 1 && Math.abs(j - king[1]) <= 1 && canMove){
                     escapes.add(new int[]{i, j});
                 }
             }
@@ -347,22 +399,36 @@ public class Board extends JPanel {
      */
     public void paint(Graphics g){
         int i, j;
-        int xAxis = 0;
-        int yAxis = 0;
+        int xAxis = 468;
+        int yAxis = 150;
+        g.drawRect(xAxis, yAxis, 600, 600);
         Color c = Color.WHITE;
+        Color d = new Color(173, 216, 230);
         for(i = 0; i < LENGTH; i++){
             for(j = 0; j < WIDTH; j++){
-                c = c.equals(Color.WHITE) ? Color.GRAY : Color.WHITE;
+                c = c.equals(Color.WHITE) ? d : Color.WHITE;
                 g.setColor(c);
-                g.fillRect(xAxis, yAxis, 100, 100);
+                g.fillRect(xAxis, yAxis, 75, 75);
                 if(pieces[i][j] != null){
-                    g.drawImage(pieces[i][j].getImage(), xAxis + 15, yAxis + 15, null);
+                    g.drawImage(pieces[i][j].getImage(), xAxis + 5, yAxis + 5, null);
                 }
-                xAxis += 100;
+                xAxis += 75;
             }
-            c = c.equals(Color.WHITE) ? Color.GRAY : Color.WHITE;
-            yAxis += 100;
-            xAxis = 0;
+            c = c.equals(Color.WHITE) ? d : Color.WHITE;
+            yAxis += 75;
+            xAxis = 468;
+        }
+        c = d;
+        g.fillRect(618, 50, 300, 50);
+        String playerTurn = turn.equals(Team.WHITE) ? "White's" : "Black's";
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        g.setColor(Color.BLACK);
+        g.drawRect(618, 50, 300, 50);
+        if(!successfulMove){
+            g.drawString("Invalid Move", 670, 80);
+        }
+        else{
+            g.drawString("It is " + playerTurn + " turn!", 670, 80);
         }
     }
 
@@ -372,7 +438,22 @@ public class Board extends JPanel {
      * result: board coordinates
      */
     public int[] getBoardCoordinates(int[] clickCors){
-        return new int[]{clickCors[0] / 100, clickCors[1] / 100};
+        return new int[]{(clickCors[0] - 150) / 75, (clickCors[1] - 468) / 75 };
+    }
+
+    /*
+     * purpose: write text indicating successful/not successful move
+     * result: desired text drawn on screen
+     */
+    public void drawCheckmateText(){
+        Graphics g = getGraphics();
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
+        Color d = new Color(173, 216, 230);
+        g.setColor(d);
+        g.fillRect(619, 51, 299, 49);
+        g.setColor(Color.BLACK);
+        String move = turn.equals(Team.WHITE) ? "Checkmate. Black wins!" : "Checkmate. White wins!";
+        g.drawString(move, 670, 80);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -385,8 +466,9 @@ public class Board extends JPanel {
         frame.addMouseListener(ml);
         frame.getContentPane().add(b);
         frame.getContentPane().addMouseListener(ml);
-        frame.setSize(800, 800);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setBackground(new Color(222, 184, 135));
         frame.setVisible(true);
         int[] currentCors, newCors;
         boolean playing = true;
@@ -409,6 +491,7 @@ public class Board extends JPanel {
             b.move(currentCors, newCors);
             playing = !b.isCheckmate();
         }
+        b.drawCheckmateText();
     }
 }
 

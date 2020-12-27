@@ -15,14 +15,14 @@ public class Pawn extends LowerPiece {
         if((yDifference < 0 && team.equals(Team.WHITE)) || (yDifference > 0 && team.equals(Team.BLACK))){
             return false;
         }
-        if(routeIsBlocked(between) || !canCapture(p) || Math.abs(yDifference) > forwardRange){
+        if(routeIsBlocked(between) || !canCapture(p) || Math.abs(yDifference) > this.forwardRange){
             return false;
         }
         if(Math.abs(xDifference) > 1){
             return false;
         }
         if(isMoving){
-            forwardRange = 1;
+            this.forwardRange = 1;
         }
         return true;
     }

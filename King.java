@@ -12,7 +12,7 @@ public class King extends Piece {
     public boolean canMove(int[] myCors, int[] hisCors, Piece[] between, Piece p, Move m, boolean isMoving) {
         int xDifference = myCors[0] - hisCors[0];
         int yDifference = myCors[1] - hisCors[1];
-        return routeIsBlocked(between) && canCapture(p) && xDifference <= 1 && yDifference <= 1;
+        return !routeIsBlocked(between) && canCapture(p) && Math.abs(xDifference) < 2 && Math.abs(yDifference) < 2;
     }
 
     @Override
@@ -27,7 +27,7 @@ public class King extends Piece {
      */
     @Override
     public boolean isCapturedBy(Team t){
-        return false;
+        return !t.equals(this.team);
     }
 
     @Override
