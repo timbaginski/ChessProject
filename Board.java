@@ -395,6 +395,14 @@ public class Board extends JPanel {
     }
 
     /*
+     * purpose: get pieces for use by cpu
+     * result: return pieces
+     */
+    public Piece[][] getPieces(){
+        return this.pieces;
+    }
+
+    /*
      * purpose: Display board tiles/pieces in appropriate locations
      */
     public void paint(Graphics g){
@@ -445,15 +453,37 @@ public class Board extends JPanel {
      * purpose: write text indicating successful/not successful move
      * result: desired text drawn on screen
      */
-    public void drawCheckmateText(){
+    public void drawText(String text){
         Graphics g = getGraphics();
         g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
         Color d = new Color(173, 216, 230);
         g.setColor(d);
         g.fillRect(619, 51, 299, 49);
         g.setColor(Color.BLACK);
-        String move = turn.equals(Team.WHITE) ? "Checkmate. Black wins!" : "Checkmate. White wins!";
-        g.drawString(move, 670, 80);
+        g.drawString(text, 670, 80);
+    }
+
+    /*
+     * purpose: give CPU enemy king cors
+     * input: Team representing CPU's team
+     * return cors of his enemy king
+     */
+    public int[] enemyKing(Team t){
+        return t.equals(Team.WHITE) ? kingB : kingW;
+    }
+
+    /*
+     * purpose: create JFrame
+     */
+    public void getJFrame(ChessListener ml){
+        JFrame frame = new JFrame();
+        frame.addMouseListener(ml);
+        frame.getContentPane().add(this);
+        frame.getContentPane().addMouseListener(ml);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setBackground(new Color(222, 184, 135));
+        frame.setVisible(true);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -462,36 +492,30 @@ public class Board extends JPanel {
         ChessListener ml = new ChessListener();
         b.addMouseListener(ml);
         // Creating JFrame
-        JFrame frame = new JFrame();
-        frame.addMouseListener(ml);
-        frame.getContentPane().add(b);
-        frame.getContentPane().addMouseListener(ml);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setBackground(new Color(222, 184, 135));
-        frame.setVisible(true);
-        int[] currentCors, newCors;
+        b.getJFrame(ml);
         boolean playing = true;
+        CPU cpu = new CPU(Team.BLACK, b);
+        int[] currentCors, newCors;
         while(playing){
             b.repaint();
-            if(ml.isFirstClick){
-                ml.setFirstClick();
+            if(b.turn.equals(cpu.team)){
+                while(!cpu.makeMove(b.getPieces())){
+                    Thread.sleep(1);
+                }
             }
-            while(!ml.isFirstClick()){
-                Thread.sleep(10);
+            else{
+                while(!ml.isFirstClick()){
+                    Thread.sleep(10);
+                }
+                currentCors = b.getBoardCoordinates(ml.getClickCors());
+                while(ml.isFirstClick()){
+                    Thread.sleep(10);
+                }
+                newCors = b.getBoardCoordinates(ml.getClickCors());
+                b.move(currentCors, newCors);
             }
-            currentCors = b.getBoardCoordinates(ml.getClickCors());
-            Thread.sleep(10);
-            while(ml.isFirstClick()){
-                Thread.sleep(10);
-            }
-            newCors = b.getBoardCoordinates(ml.getClickCors());
-            System.out.println(currentCors[0] + " " + currentCors[1]);
-            System.out.println(newCors[0] + " " + newCors[1]);
-            b.move(currentCors, newCors);
             playing = !b.isCheckmate();
         }
-        b.drawCheckmateText();
     }
 }
 

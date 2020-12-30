@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Bishop extends LowerPiece {
     public Bishop(Team team){
         super(team);
@@ -21,5 +23,58 @@ public class Bishop extends LowerPiece {
     @Override
     public String toString(){
         return "b";
+    }
+
+    /*
+     * purpose: tell CPU what my value is
+     * result: int value
+     */
+    @Override
+    public int myValue(){
+        return 3;
+    }
+
+    /*
+     * purpose: get possible moves
+     * result: returns possible moves given
+     */
+    @Override
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors){
+
+        ArrayList<int[]> moveList = new ArrayList<>();
+        int i, j;
+        j = cors[1] + 1;
+        for(i = cors[0] + 1; i < 8; i++){
+            if(j > 7 || (!canCapture(pieces[i][j]))){
+                break;
+            }
+            moveList.add(new int[]{i, j});
+            j++;
+        }
+        j = cors[1] + 1;
+        for(i = cors[0] - 1; i > -1; i--){
+            if(j > 7 || (!canCapture(pieces[i][j]))){
+                break;
+            }
+            moveList.add(new int[]{i, j});
+            j++;
+        }
+        j = cors[1] - 1;
+        for(i = cors[0] + 1; i < 8; i++){
+            if(j < 0 || (!canCapture(pieces[i][j]))){
+                break;
+            }
+            moveList.add(new int[]{i, j});
+            j--;
+        }
+        j = cors[1] - 1;
+        for(i = cors[0] - 1; i > 0; i--){
+            if(j < 0 || (!canCapture(pieces[i][j]))){
+                break;
+            }
+            moveList.add(new int[]{i, j});
+            j--;
+        }
+        return moveList;
     }
 }

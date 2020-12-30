@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class King extends Piece {
     protected boolean check;
 
@@ -33,5 +35,57 @@ public class King extends Piece {
     @Override
     public String toString(){
         return "K";
+    }
+
+    /*
+     * purpose: tell CPU what my value is
+     * result: int value
+     */
+    @Override
+    public int myValue(){
+        return 0;
+    }
+
+    /*
+     * purpose: get possible moves
+     * result: returns possible moves given
+     */
+    @Override
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors) {
+        ArrayList<int[]> moveList = new ArrayList<>();
+        int[] temp = new int[]{cors[0] + 1, cors[1] + 1};
+        if(temp[0] < 8 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0] + 1, cors[1] - 1};
+        if(temp[0] < 8 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0] - 1, cors[1] + 1};
+        if(temp[0] > 0 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0] - 1, cors[1] - 1};
+        if(temp[0] > 0 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0] + 1, cors[1]};
+        if(temp[0] < 8 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0] - 1, cors[1]};
+        if(temp[0] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0], cors[1] + 1};
+        if(temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        temp = new int[]{cors[0], cors[1] - 1};
+        if(temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+            moveList.add(temp);
+        }
+        return moveList;
+
     }
 }

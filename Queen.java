@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Queen extends LowerPiece {
     public Queen(Team team){
         super(team);
@@ -21,5 +23,25 @@ public class Queen extends LowerPiece {
     @Override
     public String toString(){
         return "q";
+    }
+
+    /*
+     * purpose: tell CPU what my value is
+     * result: int value
+     */
+    @Override
+    public int myValue(){
+        return 9;
+    }
+
+    /*
+     * purpose: get possible moves
+     * result: returns possible moves given
+     */
+    @Override
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors) {
+        ArrayList<int[]> moveList = new Bishop(team).getMoves(pieces, cors);
+        moveList.addAll(new Rook(team).getMoves(pieces, cors));
+        return moveList;
     }
 }

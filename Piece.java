@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public abstract class Piece {
     protected Team team;
@@ -98,4 +99,16 @@ public abstract class Piece {
     public boolean isMyTurn(Team t){
         return this.team.equals(t);
     }
+
+    /*
+     * purpose: tell CPU what my value is
+     * result: int value
+     */
+    public abstract int myValue();
+
+    /*
+     * purpose: get possible moves
+     * result: returns possible moves given
+     */
+    public abstract ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors);
 }
