@@ -46,27 +46,27 @@ public class Knight extends LowerPiece {
             moveList.add(temp);
         }
         temp = new int[]{cors[0] - 2, cors[1] + 1};
-        if(temp[0] > 0 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
+        if(temp[0] > -1 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
             moveList.add(temp);
         }
         temp = new int[]{cors[0] - 2, cors[1] - 1};
-        if(temp[0] > 0 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+        if(temp[0] > -1 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])){
             moveList.add(temp);
         }
         temp = new int[]{cors[0] + 2, cors[1] - 1};
-        if(temp[0] < 8 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+        if(temp[0] < 8 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])){
             moveList.add(temp);
         }
         temp = new int[]{cors[0] + 1, cors[1] - 2};
-        if(temp[0] < 8 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+        if(temp[0] < 8 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])){
             moveList.add(temp);
         }
         temp = new int[]{cors[0] - 1, cors[1] - 2};
-        if(temp[0] > 0 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])){
+        if(temp[0] > -1 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])){
             moveList.add(temp);
         }
         temp = new int[]{cors[0] - 1, cors[1] + 2};
-        if(temp[0] > 0 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
+        if(temp[0] > -1 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
             moveList.add(temp);
         }
         temp = new int[]{cors[0] + 1, cors[1] + 2};

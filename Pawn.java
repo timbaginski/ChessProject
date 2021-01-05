@@ -63,16 +63,16 @@ public class Pawn extends LowerPiece {
         }
         if (forwardRange == 2) {
             direction = direction / 2;
-            if (temp[0] < 8 && temp[0] > 0 && canCapture(pieces[temp[0]][temp[1]])) {
+            if (temp[0] < 8 && temp[0] > -1 && temp[1] < 8 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])) {
                 moveList.add(temp);
             }
         }
         temp = new int[]{cors[0] + direction, cors[1] + direction};
-        if (temp[0] < 8 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])) {
+        if (temp[0] < 8 && temp[0] > -1 && temp[1] < 8 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])) {
             moveList.add(temp);
         }
         temp = new int[]{cors[0] + direction, cors[1] - direction};
-        if (temp[0] < 8 && temp[1] > 0 && canCapture(pieces[temp[0]][temp[1]])) {
+        if (temp[0] < 8 && temp[0] > -1 && temp[1] > -1 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])) {
             moveList.add(temp);
         }
         return moveList;

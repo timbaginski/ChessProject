@@ -1,11 +1,5 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -59,21 +53,19 @@ public class Board extends JPanel {
      * result: return true of valid move, false otherwise
      */
     public boolean canMove(int[] currentCors, int[] newCors, boolean isMoving){
-        if(isInBounds(currentCors, newCors)){
+        if(isInBounds(currentCors, newCors) || pieces[currentCors[0]][currentCors[1]] == null){
             return false;
         }
-        Move m = typeOfMove(currentCors, newCors);
-        Piece p = pieces[currentCors[0]][currentCors[1]];
-        if(p == null){
-            return false;
+        List<int[]> possibleMoves = pieces[currentCors[0]][currentCors[1]].getMoves(pieces, currentCors);
+        int i;
+        int len = possibleMoves.size();
+        for(i = 0; i < len; i++){
+            if(Arrays.equals(possibleMoves.get(i), newCors)){
+                return true;
+            }
         }
-        Piece p2 = pieces[newCors[0]][newCors[1]];
-        Piece[] betweenP = getBetweenPieces(getPath(currentCors, newCors, m));
-        if(!p.isMyRoute(m, p2)){
-            return false;
-        }
-        return p.canMove(currentCors, newCors, betweenP, p2, m, isMoving);
-    }
+        return false;
+}
 
     /*
      * purpose: determine if it is current pieces turn
