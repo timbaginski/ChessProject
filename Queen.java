@@ -39,9 +39,9 @@ public class Queen extends LowerPiece {
      * result: returns possible moves given
      */
     @Override
-    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors) {
-        ArrayList<int[]> moveList = new Bishop(team).getMoves(pieces, cors);
-        moveList.addAll(new Rook(team).getMoves(pieces, cors));
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors, boolean isMoving) {
+        ArrayList<int[]> moveList = new Bishop(team).getMoves(pieces, cors, isMoving);
+        moveList.addAll(new Rook(team).getMoves(pieces, cors, isMoving));
         return moveList;
     }
 }

@@ -110,5 +110,5 @@ public abstract class Piece {
      * purpose: get possible moves
      * result: returns possible moves given
      */
-    public abstract ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors);
+    public abstract ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors, boolean isMoving);
 }

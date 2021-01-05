@@ -39,13 +39,17 @@ public class Bishop extends LowerPiece {
      * result: returns possible moves given
      */
     @Override
-    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors){
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors, boolean isMoving){
 
         ArrayList<int[]> moveList = new ArrayList<>();
         int i, j;
         j = cors[1] + 1;
         for(i = cors[0] + 1; i < 8; i++){
             if(j > 7 || (!canCapture(pieces[i][j]))){
+                break;
+            }
+            if(canCapture(pieces[i][j])){
+                moveList.add(new int[]{i, j});
                 break;
             }
             moveList.add(new int[]{i, j});
@@ -56,6 +60,10 @@ public class Bishop extends LowerPiece {
             if(j > 7 || (!canCapture(pieces[i][j]))){
                 break;
             }
+            if(canCapture(pieces[i][j])){
+                moveList.add(new int[]{i, j});
+                break;
+            }
             moveList.add(new int[]{i, j});
             j++;
         }
@@ -64,12 +72,20 @@ public class Bishop extends LowerPiece {
             if(j < 0 || (!canCapture(pieces[i][j]))){
                 break;
             }
+            if(canCapture(pieces[i][j])){
+                moveList.add(new int[]{i, j});
+                break;
+            }
             moveList.add(new int[]{i, j});
             j--;
         }
         j = cors[1] - 1;
         for(i = cors[0] - 1; i > 0; i--){
             if(j < 0 || (!canCapture(pieces[i][j]))){
+                break;
+            }
+            if(canCapture(pieces[i][j])){
+                moveList.add(new int[]{i, j});
                 break;
             }
             moveList.add(new int[]{i, j});

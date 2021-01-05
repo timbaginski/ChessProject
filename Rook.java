@@ -39,11 +39,15 @@ public class Rook extends LowerPiece {
      * result: returns possible moves given
      */
     @Override
-    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors) {
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors, boolean isMoving) {
         ArrayList<int[]> moveList = new ArrayList<>();
         int i;
         for(i = cors[0] + 1; i < 8; i++){
             if(!canCapture(pieces[i][cors[1]])){
+                break;
+            }
+            if(canCapture(pieces[i][cors[1]]) && pieces[i][cors[1]] != null){
+                moveList.add(new int[]{i, cors[1]});
                 break;
             }
             moveList.add(new int[]{i, cors[1]});
@@ -52,16 +56,28 @@ public class Rook extends LowerPiece {
             if(!canCapture(pieces[i][cors[1]])){
                 break;
             }
+            if(canCapture(pieces[i][cors[1]]) && pieces[i][cors[1]] != null){
+                moveList.add(new int[]{i, cors[1]});
+                break;
+            }
             moveList.add(new int[]{i, cors[1]});
         }
         for(i = cors[1] + 1; i < 8; i++){
             if(!canCapture(pieces[cors[0]][i])){
                 break;
             }
+            if(canCapture(pieces[cors[0]][i]) && pieces[cors[0]][i] != null){
+                moveList.add(new int[]{cors[0], i});
+                break;
+            }
             moveList.add(new int[]{cors[0], i});
         }
         for(i = cors[1] - 1; i > 0; i--){
             if(!canCapture(pieces[cors[0]][i])){
+                break;
+            }
+            if(canCapture(pieces[cors[0]][i]) && pieces[cors[0]][i] != null){
+                moveList.add(new int[]{cors[0], i});
                 break;
             }
             moveList.add(new int[]{cors[0], i});

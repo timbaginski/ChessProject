@@ -53,27 +53,29 @@ public class Pawn extends LowerPiece {
      * result: returns possible moves given
      */
     @Override
-    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors) {
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors, boolean isMoving) {
         ArrayList<int[]> moveList = new ArrayList<>();
-        int direction = this.team.equals(Team.WHITE) ? -1 : +1;
-        direction = direction * forwardRange;
+        int direction = this.team.equals(Team.WHITE) ? -1 : 1;
         int[] temp = new int[]{cors[0] + direction, cors[1]};
-        if (temp[0] < 8 && temp[0] > 0 && canCapture(pieces[temp[0]][temp[1]])) {
+        if(temp[0] < 8 && temp[0] > -1 && pieces[temp[0]][temp[1]] == null){
             moveList.add(temp);
         }
-        if (forwardRange == 2) {
-            direction = direction / 2;
-            if (temp[0] < 8 && temp[0] > -1 && temp[1] < 8 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])) {
+        if(forwardRange == 2){
+            temp = new int[]{cors[0] + (direction * 2), cors[1]};
+            if(moveList.size() == 1 && temp[0] < 8 && temp[0] > -1 && pieces[temp[0]][temp[1]] == null){
                 moveList.add(temp);
             }
         }
-        temp = new int[]{cors[0] + direction, cors[1] + direction};
-        if (temp[0] < 8 && temp[0] > -1 && temp[1] < 8 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]])) {
+        temp = new int[]{cors[0] + direction, cors[1] + 1};
+        if(temp[0] < 8 && temp[0] > -1 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]]) && pieces[temp[0]][temp[1]] != null){
             moveList.add(temp);
         }
-        temp = new int[]{cors[0] + direction, cors[1] - direction};
-        if (temp[0] < 8 && temp[0] > -1 && temp[1] > -1 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])) {
+        temp = new int[]{cors[0] + direction, cors[1] - 1};
+        if(temp[0] < 8 && temp[0] > -1 && temp[1] > -1 && canCapture(pieces[temp[0]][temp[1]]) && pieces[temp[0]][temp[1]] != null){
             moveList.add(temp);
+        }
+        if(isMoving){
+            forwardRange = 1;
         }
         return moveList;
     }

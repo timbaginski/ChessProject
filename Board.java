@@ -56,7 +56,7 @@ public class Board extends JPanel {
         if(isInBounds(currentCors, newCors) || pieces[currentCors[0]][currentCors[1]] == null){
             return false;
         }
-        List<int[]> possibleMoves = pieces[currentCors[0]][currentCors[1]].getMoves(pieces, currentCors);
+        List<int[]> possibleMoves = pieces[currentCors[0]][currentCors[1]].getMoves(pieces, currentCors, isMoving);
         int i;
         int len = possibleMoves.size();
         for(i = 0; i < len; i++){

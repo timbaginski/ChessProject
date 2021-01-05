@@ -139,7 +139,7 @@ public class CPU {
         for(i = 0; i < 8; i++) {
             for (j = 0; j < 8; j++) {
                 if(pieces[i][j] != null && hasPiece(pieces[i][j])) {
-                    pieceMoves = pieces[i][j].getMoves(pieces, new int[]{i, j});
+                    pieceMoves = pieces[i][j].getMoves(pieces, new int[]{i, j}, false);
                     for(k = 0; k < pieceMoves.size(); k++){
                         moves.put(new int[]{i, j, pieceMoves.get(k)[0], pieceMoves.get(k)[1]},
                                 getWeight(new int[]{i, j}, new int[]{pieceMoves.get(k)[0], pieceMoves.get(k)[1]}, pieces));

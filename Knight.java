@@ -39,7 +39,7 @@ public class Knight extends LowerPiece {
      * result: returns possible moves given
      */
     @Override
-    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors) {
+    public ArrayList<int[]> getMoves(Piece[][] pieces, int[] cors, boolean isMoving) {
         ArrayList<int[]> moveList = new ArrayList<>();
         int[] temp = new int[]{cors[0] + 2, cors[1] + 1};
         if(temp[0] < 8 && temp[1] < 8 && canCapture(pieces[temp[0]][temp[1]])){
