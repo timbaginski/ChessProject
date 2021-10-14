@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Rook extends LowerPiece {
     public Rook(Team team){
         super(team);
-        this.imageFile = this.team == Team.WHITE ? "src/Chess_rlt60.png" : "src/Chess_rdt60.png";
+        this.imageFile = this.team == Team.WHITE ? "Chess_rlt60.png" : "Chess_rdt60.png";
         this.image = readImageFile(imageFile);
     }
 
