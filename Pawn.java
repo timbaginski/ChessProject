@@ -6,7 +6,7 @@ public class Pawn extends LowerPiece {
     public Pawn(Team team) {
         super(team);
         this.forwardRange = 2;
-        this.imageFile = team == Team.WHITE ? "src/Chess_plt60.png" : "src/Chess_pdt60.png";
+        this.imageFile = team == Team.WHITE ? "Chess_plt60.png" : "Chess_pdt60.png";
         this.image = readImageFile(imageFile);
     }
 
