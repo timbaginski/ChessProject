@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Bishop extends LowerPiece {
     public Bishop(Team team){
         super(team);
-        this.imageFile = this.team == Team.WHITE ? "src/Chess_blt60.png" : "src/Chess_bdt60.png";
+        this.imageFile = this.team == Team.WHITE ? "Chess_blt60.png" : "Chess_bdt60.png";
         this.image = readImageFile(imageFile);
     }
 
