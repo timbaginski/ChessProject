@@ -6,7 +6,7 @@ public class King extends Piece {
     public King(Team team){
         super(team);
         check = false;
-        this.imageFile = this.team == Team.WHITE ? "src/Chess_klt60.png" : "src/Chess_kdt60.png";
+        this.imageFile = this.team == Team.WHITE ? "Chess_klt60.png" : "Chess_kdt60.png";
         this.image = readImageFile(imageFile);
     }
 
