@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Knight extends LowerPiece {
     public Knight(Team team){
         super(team);
-        this.imageFile = this.team == Team.WHITE ? "src/Chess_nlt60.png" : "src/Chess_ndt60.png";
+        this.imageFile = this.team == Team.WHITE ? "Chess_nlt60.png" : "Chess_ndt60.png";
         this.image = readImageFile(imageFile);
     }
 
